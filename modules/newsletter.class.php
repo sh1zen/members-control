@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -21,7 +21,7 @@ class Mod_NewsLetter extends Module
 
     public array $scopes = array('admin-page', 'admin');
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function actions(): void
     {
@@ -31,7 +31,7 @@ class Mod_NewsLetter extends Module
 
             if ($action == 'send-emails' and !empty($_REQUEST['nwsl-subject']) and !empty($_REQUEST['nwsl-message'])) {
 
-                require_once WPMS_SUPPORTERS . 'MembersList.class.php';
+                require_once WPMC_SUPPORTERS . 'MembersList.class.php';
 
                 $table = new MembersList(['action_hook' => $this->action_hook, 'context' => 'news']);
 
@@ -51,7 +51,7 @@ class Mod_NewsLetter extends Module
 
             $this->add_notices(
                 $response ? 'success' : 'warning',
-                $response ? __('Action was correctly executed', $this->context) : __('Action execution failed', $this->context)
+                $response ? __('Action was correctly executed', 'members-control') : __('Action execution failed', 'members-control')
             );
 
         }, false, true);
@@ -62,12 +62,12 @@ class Mod_NewsLetter extends Module
         ?>
         <section class="wps-wrap">
             <block class="wps">
-                <section class='wps-header'><h1><?php _e('News Letter', 'wpms'); ?></h1></section>
+                <section class='wps-header'><h1><?php _e('News Letter', 'members-control'); ?></h1></section>
                 <?php
                 echo Graphic::generateHTML_tabs_panels(array(
                     array(
-                        'id'        => 'wpms-members-list',
-                        'tab-title' => __('List', 'wpfs'),
+                        'id'        => 'wpmc-members-list',
+                        'tab-title' => __('List', 'members-control'),
                         'callback'  => array($this, 'render_list')
                     )
                 ));
@@ -80,7 +80,7 @@ class Mod_NewsLetter extends Module
     public function render_list(): string
     {
         ob_start();
-        require_once WPMS_SUPPORTERS . 'MembersList.class.php';
+        require_once WPMC_SUPPORTERS . 'MembersList.class.php';
 
         $table = new MembersList(['action_hook' => $this->action_hook, 'context' => 'news']);
 
@@ -93,13 +93,13 @@ class Mod_NewsLetter extends Module
                 <?php RequestActions::nonce_field($this->action_hook); ?>
                 <input class="wps" type="text" name="nwsl-subject"
                        value="<?php echo esc_attr($_REQUEST['nwsl-subject'] ?? ''); ?>"
-                       placeholder="<?php _e('E-mail subject', 'wpopt'); ?>">
+                       placeholder="<?php _e('E-mail subject', 'members-control'); ?>">
                 <br>
                 <textarea class="wps" name="nwsl-message" rows="10"
-                          placeholder="<?php _e('Message', 'wpopt'); ?>"><?php echo esc_attr($_REQUEST['nwsl-message'] ?? ''); ?></textarea>
+                          placeholder="<?php _e('Message', 'members-control'); ?>"><?php echo esc_attr($_REQUEST['nwsl-message'] ?? ''); ?></textarea>
                 <br>
                 <block class="wps-gridRow" style="justify-content: center">
-                    <?php echo RequestActions::get_action_button($this->action_hook, "send-emails", __('Send now', 'wpopt'), 'wps button-primary') ?>
+                    <?php echo RequestActions::get_action_button($this->action_hook, "send-emails", __('Send now', 'members-control'), 'wps button-primary') ?>
                 </block>
             </form>
         </block>

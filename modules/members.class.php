@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -18,7 +18,7 @@ class Mod_Members extends Module
 {
     public array $scopes = array('admin-page', 'admin');
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function actions(): void
     {
@@ -33,26 +33,26 @@ class Mod_Members extends Module
                     $request = $_REQUEST['membership'];
 
                     if ($request['level_id'] == 0) {
-                        $response = wpms_membership_drop($request['user_id']);
+                        $response = wpmc_membership_drop($request['user_id']);
                     }
                     else {
-                        $response = wpms_membership_update($request['user_id'], $request['level_id'], $request['paid']);
-                        wpms_membership_extend($request['user_id'], $request['gift_days']);
+                        $response = wpmc_membership_update($request['user_id'], $request['level_id'], $request['paid']);
+                        wpmc_membership_extend($request['user_id'], $request['gift_days']);
                     }
                     break;
 
                 case 'resume_sub':
                 case 'suspend_sub':
-                    $response = wpms_membership_suspend($_REQUEST['user_id']);
+                    $response = wpmc_membership_suspend($_REQUEST['user_id']);
                     break;
 
                 case 'drop_sub':
-                    $response = wpms_membership_drop($_REQUEST['user_id']);
+                    $response = wpmc_membership_drop($_REQUEST['user_id']);
                     break;
 
                 case 'export':
                     require_once WPS_ADDON_PATH . 'Exporter.class.php';
-                    require_once WPMS_SUPPORTERS . 'MembersList.class.php';
+                    require_once WPMC_SUPPORTERS . 'MembersList.class.php';
 
                     $table = new MembersList(['action_hook' => $this->action_hook]);
                     $exporter = new Exporter();
@@ -69,7 +69,7 @@ class Mod_Members extends Module
                         if (strtolower($_REQUEST['bulk-action']) == 'drop') {
                             $response = true;
                             foreach ($user_ids as $user_id) {
-                                wpms_membership_drop($user_id);
+                                wpmc_membership_drop($user_id);
                             }
                         }
                     }
@@ -77,7 +77,7 @@ class Mod_Members extends Module
 
             $this->add_notices(
                 $response ? 'success' : 'warning',
-                $response ? __('Action was correctly executed', $this->context) : __('Action execution failed', $this->context)
+                $response ? __('Action was correctly executed', 'members-control') : __('Action execution failed', 'members-control')
             );
 
         }, false, true);
@@ -88,7 +88,7 @@ class Mod_Members extends Module
         ?>
         <section class="wps-wrap">
             <block class="wps">
-                <section class='wps-header'><h1><?php _e('Edit Members', 'wpms'); ?></h1></section>
+                <section class='wps-header'><h1><?php _e('Edit Members', 'members-control'); ?></h1></section>
                 <?php
                 if (RequestActions::get_request($this->action_hook_page, true) === 'add' or RequestActions::get_request($this->action_hook_page, true) === 'edit') {
                     echo $this->render_edit_membership();
@@ -96,8 +96,8 @@ class Mod_Members extends Module
                 else {
                     echo Graphic::generateHTML_tabs_panels(array(
                         array(
-                            'id'        => 'wpms-members-list',
-                            'tab-title' => __('List', 'wpfs'),
+                            'id'        => 'wpmc-members-list',
+                            'tab-title' => __('List', 'members-control'),
                             'callback'  => array($this, 'render_list')
                         )
                     ));
@@ -115,14 +115,14 @@ class Mod_Members extends Module
         }
 
         if (empty($user)) {
-            return '<strong>' . __('Not valid User ID was passed.', 'wpms') . '</strong>';
+            return '<strong>' . __('Not valid User ID was passed.', 'members-control') . '</strong>';
         }
 
-        $member = wpms_get_member($user);
+        $member = wpmc_get_member($user);
 
         $defaults = [
             'level_id'  => $member->get_sub()->level_id,
-            'level'     => [__("None", 'wpms') => 0],
+            'level'     => [__("None", 'members-control') => 0],
             'paid'      => $member->get_pays(),
             'gift_days' => $member->gift_days()
         ];
@@ -132,8 +132,8 @@ class Mod_Members extends Module
         <form method="POST" class="wps" autocapitalize="off" autocomplete="off">
             <?php
 
-            $subscriptions = [__("None", 'wpms') => 0];
-            foreach (wpms_get_levels() as $level) {
+            $subscriptions = [__("None", 'members-control') => 0];
+            foreach (wpmc_get_levels() as $level) {
                 $subscriptions[ucwords($level->title)] = $level->id;
 
                 if ($level->id === $defaults['level_id']) {
@@ -143,12 +143,12 @@ class Mod_Members extends Module
 
             $setting_fields = $this->group_setting_fields(
                 $this->group_setting_fields(
-                    $this->setting_field(__('Add Subscription', 'wpms'), 'level_id', 'dropdown', [
+                    $this->setting_field(__('Add Subscription', 'members-control'), 'level_id', 'dropdown', [
                         'value' => $defaults['level'],
                         'list'  => $subscriptions
                     ]),
-                    $this->setting_field(__('Paid', 'wpms'), 'paid', 'number', ['value' => $defaults['paid']]),
-                    $this->setting_field(__('Gift Days', 'wpms'), 'gift_days', 'number', ['value' => $defaults['gift_days']]),
+                    $this->setting_field(__('Paid', 'members-control'), 'paid', 'number', ['value' => $defaults['paid']]),
+                    $this->setting_field(__('Gift Days', 'members-control'), 'gift_days', 'number', ['value' => $defaults['gift_days']]),
                 ),
             );
 
@@ -159,10 +159,10 @@ class Mod_Members extends Module
                 <?php
                 echo "<input type='hidden' name='membership[user_id]' value='" . esc_attr($user->ID) . "'>";
                 if ($member->has_subscription()) {
-                    echo RequestActions::get_action_button($this->action_hook, 'update_sub', __('Update', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'update_sub', __('Update', 'members-control'), 'button-primary');
                 }
                 else {
-                    echo RequestActions::get_action_button($this->action_hook, 'add_new_sub', __('Subscribe', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'add_new_sub', __('Subscribe', 'members-control'), 'button-primary');
                 }
                 ?>
             </row>
@@ -174,7 +174,7 @@ class Mod_Members extends Module
     public function render_list(): string
     {
         ob_start();
-        require_once WPMS_SUPPORTERS . 'MembersList.class.php';
+        require_once WPMC_SUPPORTERS . 'MembersList.class.php';
 
         $table = new MembersList(['action_hook' => $this->action_hook, 'context' => 'manage']);
 

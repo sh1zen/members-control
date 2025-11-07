@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -25,7 +25,7 @@ class CommunicationList extends \WP_List_Table
     public function __construct($args = array())
     {
         $this->modes = array(
-            'list' => __('List view', 'wpms'),
+            'list' => __('List view', 'members-control'),
         );
 
         $this->action_hook = $args['action_hook'] ?? '';
@@ -33,8 +33,8 @@ class CommunicationList extends \WP_List_Table
 
         parent::__construct(
             array(
-                'singular' => __('communication', 'wpms'),
-                'plural'   => __('communications', 'wpms'),
+                'singular' => __('communication', 'members-control'),
+                'plural'   => __('communications', 'members-control'),
                 'ajax'     => false,
                 'screen'   => get_current_screen() ?? null,
             )
@@ -49,18 +49,18 @@ class CommunicationList extends \WP_List_Table
 
         $row_actions = array();
 
-        $row_actions[] = "<span class='edit'><a href='$edit_link'>" . __('Edit', 'wpms') . "</a></span>";
+        $row_actions[] = "<span class='edit'><a href='$edit_link'>" . __('Edit', 'members-control') . "</a></span>";
 
         if (!UtilEnv::to_boolean($item->active)) {
-            $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'activate') . "&comm_id=$item->id" . "'>" . __('Activate', 'wpms') . "</a></span>";
+            $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'activate') . "&comm_id=$item->id" . "'>" . __('Activate', 'members-control') . "</a></span>";
         }
         else {
-            $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'deactivate') . "&comm_id=$item->id" . "'>" . __('Suspend', 'wpms') . "</a></span>";
+            $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'deactivate') . "&comm_id=$item->id" . "'>" . __('Suspend', 'members-control') . "</a></span>";
         }
 
-        $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'sendme') . "&comm_id=$item->id" . "'>" . __('Send Me', 'wpms') . "</a></span>";
+        $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'sendme') . "&comm_id=$item->id" . "'>" . __('Send Me', 'members-control') . "</a></span>";
 
-        $row_actions[] = "<span class='delete'><a href='" . RequestActions::get_url($this->action_hook, 'delete') . "&comm_id=$item->id" . "'>" . __('Delete', 'wpms') . "</a></span>";
+        $row_actions[] = "<span class='delete'><a href='" . RequestActions::get_url($this->action_hook, 'delete') . "&comm_id=$item->id" . "'>" . __('Delete', 'members-control') . "</a></span>";
 
         $output .= '<br><div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
 
@@ -70,7 +70,7 @@ class CommunicationList extends \WP_List_Table
     public function display_tablenav($which)
     {
         if ('top' == $which) {
-            $this->search_box(__('Search', 'wpms'), 'wpms-al-search');
+            $this->search_box(__('Search', 'members-control'), 'wpmc-al-search');
         }
         ?>
         <row class="tablenav <?php echo esc_attr($which); ?>">
@@ -113,12 +113,12 @@ class CommunicationList extends \WP_List_Table
 
         echo '<div class="alignleft actions">';
 
-        submit_button(__('Filter', 'wpms'), 'button', 'aal-filter', false);
+        submit_button(__('Filter', 'members-control'), 'button', 'aal-filter', false);
 
         echo '<select name="filter_active">';
-        printf('<option value="">%s</option>', __('View All Messages', 'wpms'));
-        printf('<option value="%s"%s>%s</option>', 'yes', selected($_REQUEST['filter_active'] ?? '', 'yes', false), __('View Active Communications', 'wpms'));
-        printf('<option value="%s"%s>%s</option>', 'no', selected($_REQUEST['filter_active'] ?? '', 'no', false), __('View Inactive Communications', 'wpms'));
+        printf('<option value="">%s</option>', __('View All Messages', 'members-control'));
+        printf('<option value="%s"%s>%s</option>', 'yes', selected($_REQUEST['filter_active'] ?? '', 'yes', false), __('View Active Communications', 'members-control'));
+        printf('<option value="%s"%s>%s</option>', 'no', selected($_REQUEST['filter_active'] ?? '', 'no', false), __('View Inactive Communications', 'members-control'));
         echo '</select>';
 
         echo '</div>';
@@ -137,14 +137,14 @@ class CommunicationList extends \WP_List_Table
         ?>
         <div class="alignleft actions recordactions">
             <select name="export-format">
-                <option value=""><?php echo esc_attr__('Export File Format', 'wpms'); ?></option>
+                <option value=""><?php echo esc_attr__('Export File Format', 'members-control'); ?></option>
                 <?php foreach ($actions as $action_key => $action_title) : ?>
                     <option value="<?php echo esc_attr($action_key); ?>"><?php echo esc_html($action_title); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <button class="button button-primary" type="submit" name="<?php echo $this->action_hook; ?>" value="export">
-            <?php _e('Export Data', 'wpms') ?>
+            <?php _e('Export Data', 'members-control') ?>
         </button>
         <?php
     }
@@ -154,7 +154,7 @@ class CommunicationList extends \WP_List_Table
         switch ($column_name) {
 
             case 'level_name':
-                $return = "<span>" . (wpms_get_level($item->level_id)->title ?: __('All', 'wpms')) . "</span>";
+                $return = "<span>" . (wpmc_get_level($item->level_id)->title ?: __('All', 'members-control')) . "</span>";
                 break;
 
             case 'message':
@@ -172,12 +172,12 @@ class CommunicationList extends \WP_List_Table
                 }
 
                 $return .= ' ' . match ($item->event) {
-                        'signup' => __("Sign Up", 'wpms'),
-                        'before_expire' => __("Before Subscription Expire", 'wpms'),
-                        'after_expire' => __("After Subscription Expire", 'wpms'),
-                        'leave' => __("User Leave Membership", 'wpms'),
-                        'drop' => __("Membership Drop", 'wpms'),
-                        'join' => __("Join Subscription", 'wpms'),
+                        'signup' => __("Sign Up", 'members-control'),
+                        'before_expire' => __("Before Subscription Expire", 'members-control'),
+                        'after_expire' => __("After Subscription Expire", 'members-control'),
+                        'leave' => __("User Leave Membership", 'members-control'),
+                        'drop' => __("Membership Drop", 'members-control'),
+                        'join' => __("Join Subscription", 'members-control'),
                         default => '',
                     };
 
@@ -264,11 +264,11 @@ class CommunicationList extends \WP_List_Table
     {
         return array(
             'cb'         => '<input type="checkbox">',
-            'subject'    => __('Subject', 'wpms'),
-            'level_name' => __('Subscription', 'wpms'),
-            'message'    => __('Message', 'wpms'),
-            'period'     => __('Period', 'wpms'),
-            'status'     => __('Status', 'wpms'),
+            'subject'    => __('Subject', 'members-control'),
+            'level_name' => __('Subscription', 'members-control'),
+            'message'    => __('Message', 'members-control'),
+            'period'     => __('Period', 'members-control'),
+            'status'     => __('Status', 'members-control'),
         );
     }
 
@@ -282,9 +282,9 @@ class CommunicationList extends \WP_List_Table
     public function get_bulk_actions()
     {
         return array(
-            'activate'   => __('Activate', 'wpms'),
-            'deactivate' => __('Suspend', 'wpms'),
-            'delete'     => __('Delete', 'wpms')
+            'activate'   => __('Activate', 'members-control'),
+            'deactivate' => __('Suspend', 'members-control'),
+            'delete'     => __('Delete', 'members-control')
         );
     }
 
@@ -295,7 +295,7 @@ class CommunicationList extends \WP_List_Table
 
     public function no_items()
     {
-        _e('No communications found.', 'wpms');
+        _e('No communications found.', 'members-control');
     }
 
     protected function bulk_actions($which = '')
@@ -308,9 +308,9 @@ class CommunicationList extends \WP_List_Table
             return;
         }
 
-        echo '<label for="bulk-action-selector-' . esc_attr($which) . '" class="screen-reader-text">' . __('Select bulk action') . '</label>';
+        echo '<label for="bulk-action-selector-' . esc_attr($which) . '" class="screen-reader-text">' . __('Select bulk action', 'members-control') . '</label>';
         echo "<select name='bulk-action' id='bulk-action-selector-" . esc_attr($which) . "'>";
-        echo '<option value="-1">' . __('Bulk actions') . "</option>";
+        echo '<option value="-1">' . __('Bulk actions', 'members-control') . "</option>";
 
         foreach ($this->_actions as $key => $value) {
             if (is_array($value)) {
@@ -332,6 +332,6 @@ class CommunicationList extends \WP_List_Table
 
         echo "</select>";
 
-        submit_button(__('Apply'), 'action', $this->action_hook, false);
+        submit_button(__('Apply', 'members-control'), 'action', $this->action_hook, false);
     }
 }

@@ -1,11 +1,11 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: wpms-translation\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-"
-"optimizer/\n"
-"POT-Creation-Date: 2024-11-13 15:01+0100\n"
-"PO-Revision-Date: 2020-05-13 02:34+0200\n"
+"Project-Id-Version: wpmc-translation\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/members-"
+"control\n"
+"POT-Creation-Date: 2025-11-12 12:48+0100\n"
+"PO-Revision-Date: 2025-05-13 02:34+0200\n"
 "Last-Translator: sh1zen\n"
 "Language-Team: sh1zen\n"
 "Language: en\n"
@@ -13,16 +13,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_ex;_x;_n;_nx;_n_noop;_nx_noop;esc_html__;"
-"esc_attr__;esc_attr_e;esc_html_e;esc_attr_x;esc_html_x\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_ex;_x;_n;_nx;_n_noop;_nx_noop;esc_html__;esc_attr__;esc_attr_e;esc_html_e;esc_attr_x;esc_html_x\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: languages\n"
 
 #: admin/PagesHandler.class.php:46
-msgid "WPMS Settings"
+msgid "WPMC Settings"
 msgstr ""
 
 #: admin/PagesHandler.class.php:46 admin/PluginInit.class.php:226
@@ -79,6 +79,82 @@ msgstr ""
 
 #: admin/PluginInit.class.php:207
 msgid "Buy me a beer"
+msgstr ""
+
+#: modules/access.class.php:47
+msgid "Accessibility"
+msgstr ""
+
+#: modules/access.class.php:58
+msgid "Config"
+msgstr ""
+
+#: modules/access.class.php:64
+msgid "Special pages"
+msgstr ""
+
+#: modules/access.class.php:70
+msgid "Post types"
+msgstr ""
+
+#: modules/access.class.php:76
+msgid "Archives"
+msgstr ""
+
+#: modules/access.class.php:82
+msgid "Taxonomy"
+msgstr ""
+
+#: modules/access.class.php:89
+msgid "Save Changes"
+msgstr ""
+
+#: modules/access.class.php:130
+#: modules/supporters/CommunicationList.class.php:271
+#: modules/supporters/LevelsList.class.php:279
+msgid "Status"
+msgstr ""
+
+#: modules/access.class.php:148
+msgid "Config:"
+msgstr ""
+
+#: modules/access.class.php:149
+msgid "No Subscription"
+msgstr ""
+
+#: modules/access.class.php:150
+#: modules/supporters/MembersList.class.php:261
+msgid "Suspended"
+msgstr ""
+
+#: modules/access.class.php:151
+msgid "Restricted level"
+msgstr ""
+
+#: modules/access.class.php:156
+msgid "Home:"
+msgstr ""
+
+#: modules/access.class.php:160
+msgid "Search page:"
+msgstr ""
+
+#: modules/access.class.php:164
+msgid "Admin:"
+msgstr ""
+
+#: modules/access.class.php:171
+msgid "Date:"
+msgstr ""
+
+#: modules/access.class.php:175
+msgid "Author:"
+msgstr ""
+
+#: modules/access.class.php:206
+#, php-format
+msgid "%s archive:"
 msgstr ""
 
 #: modules/communications.class.php:108 modules/levels.class.php:100
@@ -432,11 +508,6 @@ msgstr ""
 msgid "Period"
 msgstr ""
 
-#: modules/supporters/CommunicationList.class.php:271
-#: modules/supporters/LevelsList.class.php:279
-msgid "Status"
-msgstr ""
-
 #: modules/supporters/CommunicationList.class.php:298
 msgid "No communications found."
 msgstr ""
@@ -562,10 +633,6 @@ msgstr ""
 
 #: modules/supporters/MembersList.class.php:210
 msgid "90 Days"
-msgstr ""
-
-#: modules/supporters/MembersList.class.php:261
-msgid "Suspended"
 msgstr ""
 
 #: modules/supporters/MembersList.class.php:267

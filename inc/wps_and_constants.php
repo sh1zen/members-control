@@ -1,16 +1,16 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
-define("WPMS_ABSPATH", dirname(__DIR__) . '/');
+define("WPMC_ABSPATH", dirname(__DIR__) . '/');
 
-const WPMS_INCPATH = WPMS_ABSPATH . 'inc/';
-const WPMS_MODULES = WPMS_ABSPATH . 'modules/';
-const WPMS_ADMIN = WPMS_ABSPATH . 'admin/';
-const WPMS_SUPPORTERS = WPMS_MODULES . 'supporters/';
+const WPMC_INCPATH = WPMC_ABSPATH . 'inc/';
+const WPMC_MODULES = WPMC_ABSPATH . 'modules/';
+const WPMC_ADMIN = WPMC_ABSPATH . 'admin/';
+const WPMC_SUPPORTERS = WPMC_MODULES . 'supporters/';
 
 // wps-framework commons
 if (!defined('WPS_FRAMEWORK')) {
@@ -18,17 +18,17 @@ if (!defined('WPS_FRAMEWORK')) {
         require_once WPS_FRAMEWORK_SOURCE . 'loader.php';
     }
     else {
-        if (!file_exists(WPMS_ABSPATH . 'vendors/wps-framework/loader.php')) {
+        if (!file_exists(WPMC_ABSPATH . 'vendors/wps-framework/loader.php')) {
             return;
         }
-        require_once WPMS_ABSPATH . 'vendors/wps-framework/loader.php';
+        require_once WPMC_ABSPATH . 'vendors/wps-framework/loader.php';
     }
 }
 
 wps(
-    'wpms',
+    'wpmc',
     [
-        'modules_path' => WPMS_MODULES,
+        'modules_path' => WPMC_MODULES,
     ],
     [
         'cache'         => true,
@@ -36,9 +36,9 @@ wps(
     ]
 );
 
-define('WPMS_DEBUG', !wps_core()->online);
+define('WPMC_DEBUG', !wps_core()->online);
 
-function wpms_setup_db_table_constants(): void
+function wpmc_setup_db_table_constants(): void
 {
     global $wpdb;
 
@@ -54,4 +54,4 @@ function wpms_setup_db_table_constants(): void
     define('WP_MEMBERSHIP_TABLE_COMMUNICATIONS_SENT', "{$wpdb->prefix}membership_communications_sent");
 }
 
-wpms_setup_db_table_constants();
+wpmc_setup_db_table_constants();

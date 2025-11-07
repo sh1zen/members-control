@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -54,7 +54,7 @@ class MembershipSubscription
 
         $total_days = (int)$query->where(['user_id' => $this->user_id])->query_one();
 
-        return $total_days - wpms_get_level($this->level_id)->durationDays();
+        return $total_days - wpmc_get_level($this->level_id)->durationDays();
     }
 
     public function is_valid(): bool
@@ -83,7 +83,7 @@ class MembershipSubscription
     public function get_level(): ?MembershipLevel
     {
         if (!$this->level) {
-            $this->level = wpms_get_level($this->level_id);
+            $this->level = wpmc_get_level($this->level_id);
         }
 
         return $this->level;

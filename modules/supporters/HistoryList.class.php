@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -20,15 +20,15 @@ class HistoryList extends \WP_List_Table
     public function __construct($args = array())
     {
         $this->modes = array(
-            'list' => __('List view', 'wpms'),
+            'list' => __('List view', 'members-control'),
         );
 
         $this->action_hook = $args['action_hook'] ?? '';
 
         parent::__construct(
             array(
-                'singular' => __('history', 'wpms'),
-                'plural'   => __('history', 'wpms'),
+                'singular' => __('history', 'members-control'),
+                'plural'   => __('history', 'members-control'),
                 'ajax'     => false,
                 'screen'   => get_current_screen() ?? null,
             )
@@ -68,14 +68,14 @@ class HistoryList extends \WP_List_Table
         ?>
         <div class="alignleft actions recordactions">
             <select name="export-format">
-                <option value=""><?php echo esc_attr__('Export File Format', 'wpms'); ?></option>
+                <option value=""><?php echo esc_attr__('Export File Format', 'members-control'); ?></option>
                 <?php foreach ($actions as $action_key => $action_title) : ?>
                     <option value="<?php echo esc_attr($action_key); ?>"><?php echo esc_html($action_title); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <button class="button button-primary" type="submit" name="<?php echo $this->action_hook; ?>" value="export">
-            <?php _e('Export Data', 'wpms') ?>
+            <?php _e('Export Data', 'members-control') ?>
         </button>
         <?php
     }
@@ -96,7 +96,7 @@ class HistoryList extends \WP_List_Table
                 break;
 
             case 'level':
-                $return = '<span>' . wpms_get_level($item->level_id)->title . '</span>';
+                $return = '<span>' . wpmc_get_level($item->level_id)->title . '</span>';
                 break;
 
             case 'time':
@@ -145,15 +145,15 @@ class HistoryList extends \WP_List_Table
     public function get_columns()
     {
         return array(
-            'user'   => __('User', 'wpms'),
-            'level'  => __('Subscription', 'wpms'),
-            'action' => __('Action', 'wpms'),
-            'time'   => __('Time', 'wpms')
+            'user'   => __('User', 'members-control'),
+            'level'  => __('Subscription', 'members-control'),
+            'action' => __('Action', 'members-control'),
+            'time'   => __('Time', 'members-control')
         );
     }
 
     public function no_items()
     {
-        _e('No subscriptions found.', 'wpms');
+        _e('No subscriptions found.', 'members-control');
     }
 }

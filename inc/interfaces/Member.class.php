@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -48,7 +48,7 @@ class Member
     public function get_sub(): ?MembershipSubscription
     {
         if (!$this->subscription) {
-            $this->subscription = wpms_user_get_subscription($this->user);
+            $this->subscription = wpmc_user_get_subscription($this->user);
         }
         return $this->subscription;
     }

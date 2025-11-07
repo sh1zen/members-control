@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -16,20 +16,20 @@ class Mod_History extends Module
 {
     public array $scopes = array('admin-page');
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function render_sub_modules(): void
     {
         ?>
         <section class="wps-wrap">
             <block class="wps">
-                <section class='wps-header'><h1><?php _e('Subscriptions History', 'wpms'); ?></h1></section>
+                <section class='wps-header'><h1><?php _e('Subscriptions History', 'members-control'); ?></h1></section>
                 <?php
 
                 echo Graphic::generateHTML_tabs_panels(array(
                     array(
-                        'id'        => 'wpms-history-list',
-                        'tab-title' => __('List', 'wpfs'),
+                        'id'        => 'wpmc-history-list',
+                        'tab-title' => __('List', 'members-control'),
                         'callback'  => array($this, 'render_list')
                     )
                 ));
@@ -42,7 +42,7 @@ class Mod_History extends Module
     public function render_list(): string
     {
         ob_start();
-        require_once WPMS_SUPPORTERS . 'HistoryList.class.php';
+        require_once WPMC_SUPPORTERS . 'HistoryList.class.php';
 
         $table = new HistoryList(['action_hook' => $this->action_hook]);
 

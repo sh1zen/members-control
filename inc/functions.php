@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -17,13 +17,13 @@ require_once __DIR__ . '/interfaces/MembershipLevel.class.php';
 require_once __DIR__ . '/interfaces/MembershipSubscription.class.php';
 
 
-function wpms_get_level($level, $by = 'id'): MembershipLevel
+function wpmc_get_level($level, $by = 'id'): MembershipLevel
 {
     if (is_object($level)) {
-        return wpms_get_level($level->id ?? 0, 'id');
+        return wpmc_get_level($level->id ?? 0, 'id');
     }
 
-    if ($cache = wps('wpms')->cache->get($by . $level, 'level')) {
+    if ($cache = wps('wpmc')->cache->get($by . $level, 'level')) {
         return $cache;
     }
 
@@ -32,7 +32,7 @@ function wpms_get_level($level, $by = 'id'): MembershipLevel
     $level_object = new MembershipLevel($res);
 
     if ($res) {
-        wps('wpms')->cache->set($by . $level, $level_object, 'level', true);
+        wps('wpmc')->cache->set($by . $level, $level_object, 'level', true);
     }
 
     return $level_object;
@@ -41,9 +41,9 @@ function wpms_get_level($level, $by = 'id'): MembershipLevel
 /**
  * @return MembershipLevel[]
  */
-function wpms_get_levels(): array
+function wpmc_get_levels(): array
 {
-    if ($levels = wps('wpms')->cache->get('all', 'level')) {
+    if ($levels = wps('wpmc')->cache->get('all', 'level')) {
         return $levels;
     }
 
@@ -53,12 +53,12 @@ function wpms_get_levels(): array
         $levels[$index] = new MembershipLevel($level);
     }
 
-    wps('wpms')->cache->set('all', $levels, 'level', true);
+    wps('wpmc')->cache->set('all', $levels, 'level', true);
 
     return $levels;
 }
 
-function wpms_stats_count_possible_members($wp_roles): int
+function wpmc_stats_count_possible_members($wp_roles): int
 {
     $tot = 0;
 
@@ -69,24 +69,24 @@ function wpms_stats_count_possible_members($wp_roles): int
     return $tot;
 }
 
-function wpms_stats_count_members(): int
+function wpmc_stats_count_members(): int
 {
-    if ($subscribed = wps('wpms')->cache->get('stats_count', 'members')) {
+    if ($subscribed = wps('wpmc')->cache->get('stats_count', 'members')) {
         return $subscribed;
     }
 
     $subscribed = Query::getInstance()->tables(WP_MEMBERSHIP_TABLE_SUBSCRIPTIONS)->select('COUNT(*)')->query_one() ?: 0;
 
-    wps('wpms')->cache->set('stats_count', $subscribed, 'members', true);
+    wps('wpmc')->cache->set('stats_count', $subscribed, 'members', true);
 
     return $subscribed;
 }
 
-function wpms_subscription_get_users($level_id = 0): array
+function wpmc_subscription_get_users($level_id = 0): array
 {
     global $wpdb;
 
-    if ($user_ids = wps('wpms')->cache->get($level_id, 'level-users')) {
+    if ($user_ids = wps('wpmc')->cache->get($level_id, 'level-users')) {
         return $user_ids;
     }
 
@@ -101,18 +101,18 @@ function wpms_subscription_get_users($level_id = 0): array
 
     $user_ids = $query->query_multi();
 
-    wps('wpms')->cache->set($level_id, $user_ids, 'level-users', true);
+    wps('wpmc')->cache->set($level_id, $user_ids, 'level-users', true);
 
     return $user_ids;
 }
 
-function wpms_user_get_subscription($user): ?MembershipSubscription
+function wpmc_user_get_subscription($user): ?MembershipSubscription
 {
     if (!$user = wps_get_user($user)) {
         return null;
     }
 
-    if ($cache = wps('wpms')->cache->get($user->ID, 'user_subscription')) {
+    if ($cache = wps('wpmc')->cache->get($user->ID, 'user_subscription')) {
         return $cache;
     }
 
@@ -121,13 +121,13 @@ function wpms_user_get_subscription($user): ?MembershipSubscription
     $sub = new MembershipSubscription($res);
 
     if ($res) {
-        wps('wpms')->cache->set($user->ID, $sub, 'user_subscription', true);
+        wps('wpmc')->cache->set($user->ID, $sub, 'user_subscription', true);
     }
 
     return $sub;
 }
 
-function wpms_register_update($user, $level_id, $action, $paid = 0): bool
+function wpmc_register_update($user, $level_id, $action, $paid = 0): bool
 {
     if (!$user = wps_get_user($user)) {
         return false;
@@ -142,7 +142,7 @@ function wpms_register_update($user, $level_id, $action, $paid = 0): bool
     return (bool)$historyQuery->query();
 }
 
-function wpms_register_update_field($user, $level_id, $field): bool
+function wpmc_register_update_field($user, $level_id, $field): bool
 {
     if (!$user = wps_get_user($user)) {
         return false;
@@ -155,7 +155,7 @@ function wpms_register_update_field($user, $level_id, $field): bool
     return (bool)$historyQuery->query();
 }
 
-function wpms_get_member($member): ?Member
+function wpmc_get_member($member): ?Member
 {
     if ($member instanceof Member) {
         return $member;
@@ -165,25 +165,25 @@ function wpms_get_member($member): ?Member
         return null;
     }
 
-    if ($cache = wps('wpms')->cache->get($user->ID, 'member')) {
+    if ($cache = wps('wpmc')->cache->get($user->ID, 'member')) {
         return $cache;
     }
 
     $member = Member::get($user);
 
-    wps('wpms')->cache->set($user->ID, $member, 'member', true);
+    wps('wpmc')->cache->set($user->ID, $member, 'member', true);
 
     return $member;
 }
 
-function wpms_membership_update($user, $level_id, $paid = 0): bool
+function wpmc_membership_update($user, $level_id, $paid = 0): bool
 {
     // check if new level_id exist
-    if (!($level = wpms_get_level($level_id, 'id'))->id) {
+    if (!($level = wpmc_get_level($level_id, 'id'))->id) {
         return false;
     }
 
-    if (!$member = wpms_get_member($user)) {
+    if (!$member = wpmc_get_member($user)) {
         return false;
     }
 
@@ -210,20 +210,20 @@ function wpms_membership_update($user, $level_id, $paid = 0): bool
         $res &= $query->query();
 
         if ($updating) {
-            $res &= wpms_register_update($member->get_user(), $member->get_sub()->level_id, 'leave');
+            $res &= wpmc_register_update($member->get_user(), $member->get_sub()->level_id, 'leave');
         }
 
-        $res &= wpms_register_update($member->get_user(), $level_id, 'join', $paid);
+        $res &= wpmc_register_update($member->get_user(), $level_id, 'join', $paid);
     }
     else {
-        $res &= wpms_register_update_field($member->get_user(), $level_id, ['paid' => $paid]);
+        $res &= wpmc_register_update_field($member->get_user(), $level_id, ['paid' => $paid]);
     }
 
     if ($res) {
 
         if ($member->get_sub()->level_id !== $level->id) {
             // we are changing a subscription level
-            wpms_user_notify($member->get_user(), 'join');
+            wpmc_user_notify($member->get_user(), 'join');
         }
 
         $query->commit();
@@ -235,15 +235,15 @@ function wpms_membership_update($user, $level_id, $paid = 0): bool
     $res = (bool)$res;
 
     if ($res) {
-        do_action('wpms_reset_membership', $member->get_user()->ID, 'update');
+        do_action('wpmc_reset_membership', $member->get_user()->ID, 'update');
     }
 
     return $res;
 }
 
-function wpms_membership_extend($user, $days = 0): bool
+function wpmc_membership_extend($user, $days = 0): bool
 {
-    $member = wpms_get_member($user);
+    $member = wpmc_get_member($user);
 
     if (!$member or !$member->has_subscription()) {
         return false;
@@ -258,19 +258,19 @@ function wpms_membership_extend($user, $days = 0): bool
     $res = (bool)$query->query();
 
     // empty caches
-    wps('wpms')->cache->delete($member->get_user()->ID, 'user_subscription');
-    wps('wpms')->cache->delete($member->get_user()->ID, 'member');
+    wps('wpmc')->cache->delete($member->get_user()->ID, 'user_subscription');
+    wps('wpmc')->cache->delete($member->get_user()->ID, 'member');
 
     if ($res) {
-        do_action('wpms_reset_membership', $member->get_user()->ID, 'extend');
+        do_action('wpmc_reset_membership', $member->get_user()->ID, 'extend');
     }
 
     return $res;
 }
 
-function wpms_membership_suspend($user): bool
+function wpmc_membership_suspend($user): bool
 {
-    $member = wpms_get_member($user);
+    $member = wpmc_get_member($user);
 
     if (!$member or !$member->has_subscription()) {
         return false;
@@ -290,7 +290,7 @@ function wpms_membership_suspend($user): bool
     $res = (bool)$query->query();
 
     if ($res) {
-        do_action('wpms_reset_membership', $member->get_user()->ID, 'suspend');
+        do_action('wpmc_reset_membership', $member->get_user()->ID, 'suspend');
     }
 
     return $res;
@@ -299,9 +299,9 @@ function wpms_membership_suspend($user): bool
 /**
  * context drop | expired
  */
-function wpms_membership_drop($user, $context = 'drop'): int
+function wpmc_membership_drop($user, $context = 'drop'): int
 {
-    $member = wpms_get_member($user);
+    $member = wpmc_get_member($user);
 
     if (!$member or !$member->has_subscription()) {
         return 0;
@@ -312,11 +312,11 @@ function wpms_membership_drop($user, $context = 'drop'): int
     $res = $query->delete(['user_id' => $member->get_user()->ID], WP_MEMBERSHIP_TABLE_SUBSCRIPTIONS)->query();
 
     if ($res) {
-        $res &= wpms_register_update($member->get_user(), $member->get_sub()->level_id, 'leave');
+        $res &= wpmc_register_update($member->get_user(), $member->get_sub()->level_id, 'leave');
     }
 
     if ($res) {
-        wpms_user_notify($member->get_user(), $context, true);
+        wpmc_user_notify($member->get_user(), $context, true);
         $query->commit();
     }
     else {
@@ -324,24 +324,24 @@ function wpms_membership_drop($user, $context = 'drop'): int
     }
 
     if ($res) {
-        do_action('wpms_reset_membership', $member->get_user()->ID, 'drop');
+        do_action('wpmc_reset_membership', $member->get_user()->ID, 'drop');
     }
 
     return $res ? $member->get_sub()->level_id : 0;
 }
 
-function wpms_drop_expired_memberships(): void
+function wpmc_drop_expired_memberships(): void
 {
     $query = Query::getInstance()->select('user_id', WP_MEMBERSHIP_TABLE_SUBSCRIPTIONS);
     $query->where_unquoted(['expirydate' => 'NULL', 'compare' => 'IS NOT']);
     $users = $query->where(['expirydate' => wps_time('mysql'), 'compare' => '<'])->query(false, true);
 
     foreach ($users as $user_id) {
-        wpms_membership_drop($user_id, 'expired');
+        wpmc_membership_drop($user_id, 'expired');
     }
 }
 
-function wpms_notify_expiring_members(): void
+function wpmc_notify_expiring_members(): void
 {
     $query = Query::getInstance(OBJECT, true)->tables([
         'T0' => WP_MEMBERSHIP_TABLE_COMMUNICATIONS,
@@ -361,12 +361,12 @@ function wpms_notify_expiring_members(): void
     $query->limit(50);
 
     foreach ($query->query() as $match) {
-        wpms_user_notify($match->user_id, $match->id);
+        wpmc_user_notify($match->user_id, $match->id);
         usleep(5000);
     }
 }
 
-function wpms_delete_member($user_id, $history = true): void
+function wpmc_delete_member($user_id, $history = true): void
 {
     if ($history) {
         Query::getInstance()->delete(['user_id' => $user_id], WP_MEMBERSHIP_TABLE_HISTORY)->query();
@@ -375,15 +375,15 @@ function wpms_delete_member($user_id, $history = true): void
     Query::getInstance()->delete(['user_id' => $user_id], WP_MEMBERSHIP_TABLE_SUBSCRIPTIONS)->query();
     Query::getInstance()->delete(['user_id' => $user_id], WP_MEMBERSHIP_TABLE_COMMUNICATIONS_SENT)->query();
 
-    do_action('wpms_reset_membership', $user_id, 'delete');
+    do_action('wpmc_reset_membership', $user_id, 'delete');
 }
 
 /**
  * $context = leave/expired/join/signup
  */
-function wpms_user_notify($user, $context, $clear_history = false): bool
+function wpmc_user_notify($user, $context, $clear_history = false): bool
 {
-    $member = wpms_get_member($user);
+    $member = wpmc_get_member($user);
 
     if (!$member) {
         return false;
@@ -435,7 +435,7 @@ function wpms_user_notify($user, $context, $clear_history = false): bool
         UtilEnv::safe_time_limit(20, 120);
 
         if (UtilEnv::to_boolean($comm->forward_admin)) {
-            $headers[] = 'Bcc: ' . apply_filters('wpms_admin_forward_mail', get_option('admin_email'));
+            $headers[] = 'Bcc: ' . apply_filters('wpmc_admin_forward_mail', get_option('admin_email'));
         }
 
         $res = wp_mail(

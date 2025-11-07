@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -15,7 +15,7 @@ class Mod_Modules_Handler extends Module
 
     private array $modules_slug2name = [];
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function restricted_access($context = ''): bool
     {
@@ -31,7 +31,7 @@ class Mod_Modules_Handler extends Module
 
     protected function init(): void
     {
-        $modules = wps('wpms')->moduleHandler->get_modules(array('excepts' => array('modules_handler', 'settings', 'cron')), false);
+        $modules = wps('wpmc')->moduleHandler->get_modules(array('excepts' => array('modules_handler', 'settings', 'cron')), false);
 
         $this->modules_slug2name = array_combine(array_column($modules, 'slug'), array_column($modules, 'name'));
     }

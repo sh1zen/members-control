@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -20,7 +20,7 @@ class Mod_Levels extends Module
 {
     public array $scopes = array('admin-page', 'admin');
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function actions(): void
     {
@@ -63,7 +63,7 @@ class Mod_Levels extends Module
 
                 case 'export':
                     require_once WPS_ADDON_PATH . 'Exporter.class.php';
-                    require_once WPMS_SUPPORTERS . 'LevelsList.class.php';
+                    require_once WPMC_SUPPORTERS . 'LevelsList.class.php';
 
                     $table = new LevelsList(['action_hook' => $this->action_hook]);
                     $exporter = new Exporter();
@@ -97,7 +97,7 @@ class Mod_Levels extends Module
 
             $this->add_notices(
                 $response ? 'success' : 'warning',
-                $response ? __('Action was correctly executed', $this->context) : __('Action execution failed', $this->context)
+                $response ? __('Action was correctly executed', 'members-control') : __('Action execution failed', 'members-control')
             );
 
         }, false, true);
@@ -108,7 +108,7 @@ class Mod_Levels extends Module
         ?>
         <section class="wps-wrap">
             <block class="wps">
-                <section class='wps-header'><h1><?php _e('Subscription plans', 'wpms'); ?></h1></section>
+                <section class='wps-header'><h1><?php _e('Subscription plans', 'members-control'); ?></h1></section>
                 <?php
                 if (RequestActions::get_request($this->action_hook_page) === 'edit') {
                     echo $this->render_edit();
@@ -117,13 +117,13 @@ class Mod_Levels extends Module
                     echo Graphic::generateHTML_tabs_panels(array(
 
                         array(
-                            'id'        => 'wpms-subscriptions-list',
-                            'tab-title' => __('List', 'wpfs'),
+                            'id'        => 'wpmc-subscriptions-list',
+                            'tab-title' => __('List', 'members-control'),
                             'callback'  => array($this, 'render_list')
                         ),
                         array(
-                            'id'        => 'wpms-subscriptions-new',
-                            'tab-title' => __('Add New', 'wpfs'),
+                            'id'        => 'wpmc-subscriptions-new',
+                            'tab-title' => __('Add New', 'members-control'),
                             'callback'  => array($this, 'render_new')
                         )
                     ));
@@ -141,7 +141,7 @@ class Mod_Levels extends Module
         }
 
         if (empty($level)) {
-            return '<strong>' . __('Not valid Level ID was passed.', 'wpms') . '</strong>';
+            return '<strong>' . __('Not valid Level ID was passed.', 'members-control') . '</strong>';
         }
 
         $level_edit_values = [
@@ -149,21 +149,21 @@ class Mod_Levels extends Module
             'title'          => $level->title,
             'description'    => $level->description,
             'type'           => match ($level->type) {
-                'indefinite' => [__("Indefinite", 'wpms') => 'indefinite'],
-                'serial' => [__("Serial", 'wpms') => 'serial'],
-                default => [__("Finite", 'wpms') => 'finite']
+                'indefinite' => [__("Indefinite", 'members-control') => 'indefinite'],
+                'serial' => [__("Serial", 'members-control') => 'serial'],
+                default => [__("Finite", 'members-control') => 'finite']
             },
             'duration.digit' => 0,
-            'duration.unit'  => [__("Day", 'wpms') => DAY_IN_SECONDS],
+            'duration.unit'  => [__("Day", 'members-control') => DAY_IN_SECONDS],
             'active'         => UtilEnv::to_boolean($level->active)
         ];
 
         $time_units = [
-            __("Year", 'wpms')    => YEAR_IN_SECONDS,
-            __("Month", 'wpms')   => MONTH_IN_SECONDS,
-            __("Day", 'wpms')     => DAY_IN_SECONDS,
-            __("Hour", 'wpms')    => HOUR_IN_SECONDS,
-            __("Minutes", 'wpms') => MINUTE_IN_SECONDS
+            __("Year", 'members-control')    => YEAR_IN_SECONDS,
+            __("Month", 'members-control')   => MONTH_IN_SECONDS,
+            __("Day", 'members-control')     => DAY_IN_SECONDS,
+            __("Hour", 'members-control')    => HOUR_IN_SECONDS,
+            __("Minutes", 'members-control') => MINUTE_IN_SECONDS
         ];
 
         if ($level->duration) {
@@ -188,21 +188,21 @@ class Mod_Levels extends Module
 
             $setting_fields = $this->group_setting_fields(
                 $this->group_setting_fields(
-                    $this->setting_field(__('Title', 'wpms'), 'title', 'text', ['value' => $defaults['title'] ?? '']),
-                    $this->setting_field(__('Description', 'wpms'), 'description', 'textarea', ['value' => $defaults['description'] ?? '']),
-                    $this->setting_field(__('Duration', 'wpms'), 'duration.digit', 'dropdown', ['value' => $defaults['duration.digit'] ?? '1', 'list' => range(0, 365)]),
-                    $this->setting_field(__('Unit', 'wpms'), 'duration.unit', 'dropdown', ['value' => $defaults['duration.unit'] ?? [__("Year", 'wpms') => YEAR_IN_SECONDS], 'list' => [
-                        __("Year", 'wpms')  => YEAR_IN_SECONDS,
-                        __("Month", 'wpms') => MONTH_IN_SECONDS,
-                        __("Day", 'wpms')   => DAY_IN_SECONDS,
-                        __("Hour", 'wpms')  => HOUR_IN_SECONDS,
+                    $this->setting_field(__('Title', 'members-control'), 'title', 'text', ['value' => $defaults['title'] ?? '']),
+                    $this->setting_field(__('Description', 'members-control'), 'description', 'textarea', ['value' => $defaults['description'] ?? '']),
+                    $this->setting_field(__('Duration', 'members-control'), 'duration.digit', 'dropdown', ['value' => $defaults['duration.digit'] ?? '1', 'list' => range(0, 365)]),
+                    $this->setting_field(__('Unit', 'members-control'), 'duration.unit', 'dropdown', ['value' => $defaults['duration.unit'] ?? [__("Year", 'members-control') => YEAR_IN_SECONDS], 'list' => [
+                        __("Year", 'members-control')  => YEAR_IN_SECONDS,
+                        __("Month", 'members-control') => MONTH_IN_SECONDS,
+                        __("Day", 'members-control')   => DAY_IN_SECONDS,
+                        __("Hour", 'members-control')  => HOUR_IN_SECONDS,
                     ]]),
-                    $this->setting_field(__('Type', 'wpms'), 'type', 'dropdown', ['value' => $defaults['type'] ?? [__("Finite", 'wpms') => 'finite'], 'list' => [
-                        __("Finite", 'wpms')     => 'finite',
-                        __("Indefinite", 'wpms') => 'indefinite',
-                        __("Serial", 'wpms')     => 'serial',
+                    $this->setting_field(__('Type', 'members-control'), 'type', 'dropdown', ['value' => $defaults['type'] ?? [__("Finite", 'members-control') => 'finite'], 'list' => [
+                        __("Finite", 'members-control')     => 'finite',
+                        __("Indefinite", 'members-control') => 'indefinite',
+                        __("Serial", 'members-control')     => 'serial',
                     ]]),
-                    $this->setting_field(__('Active', 'wpms'), 'active', 'checkbox', ['value' => $defaults['active'] ?? true]),
+                    $this->setting_field(__('Active', 'members-control'), 'active', 'checkbox', ['value' => $defaults['active'] ?? true]),
                 ),
             );
 
@@ -213,11 +213,11 @@ class Mod_Levels extends Module
             <row class="wps-custom-action wps-row">
                 <?php
                 if (isset($defaults['id']) and $defaults['id']) {
-                    echo RequestActions::get_action_button($this->action_hook, 'update', __('Update', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'update', __('Update', 'members-control'), 'button-primary');
                     echo "<input type='hidden' name='new_level[level_id]' value='" . esc_attr($defaults['id']) . "'>";
                 }
                 else {
-                    echo RequestActions::get_action_button($this->action_hook, 'add_new', __('Add new', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'add_new', __('Add new', 'members-control'), 'button-primary');
                 }
                 ?>
             </row>
@@ -229,7 +229,7 @@ class Mod_Levels extends Module
     public function render_list(): string
     {
         ob_start();
-        require_once WPMS_SUPPORTERS . 'LevelsList.class.php';
+        require_once WPMC_SUPPORTERS . 'LevelsList.class.php';
 
         $table = new LevelsList(['action_hook' => $this->action_hook]);
 

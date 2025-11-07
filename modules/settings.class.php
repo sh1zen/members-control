@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -17,7 +17,7 @@ class Mod_Settings extends Module
 {
     public array $scopes = array('core-settings', 'admin');
 
-    protected string $context = 'wpms';
+    protected string $context = 'wpmc';
 
     public function restricted_access($context = ''): bool
     {
@@ -41,12 +41,12 @@ class Mod_Settings extends Module
             switch ($action) {
 
                 case 'reset_options':
-                    $response = wps('wpms')->settings->reset();
+                    $response = wps('wpmc')->settings->reset();
                     Rewriter::reload();
                     break;
 
                 case 'restore_options':
-                    $response = wps('wpms')->moduleHandler->upgrade();
+                    $response = wps('wpmc')->moduleHandler->upgrade();
                     break;
 
                 case 'export_options':
@@ -55,25 +55,25 @@ class Mod_Settings extends Module
 
                     $exporter = new Exporter();
 
-                    $exporter->set_raw(wps('wpms')->settings->export());
+                    $exporter->set_raw(wps('wpmc')->settings->export());
                     $exporter->format('text');
-                    $exporter->download('wpms-export.conf');
+                    $exporter->download('wpmc-export.conf');
 
                     unset($exporter);
 
                     break;
 
                 case 'import_options':
-                    $response = wps('wpms')->settings->import($_REQUEST['conf_data']);
-                    $response &= wps('wpms')->moduleHandler->upgrade();
+                    $response = wps('wpmc')->settings->import($_REQUEST['conf_data']);
+                    $response &= wps('wpmc')->moduleHandler->upgrade();
                     break;
             }
 
             if ($response) {
-                $this->add_notices('success', __('Action was correctly executed', $this->context));
+                $this->add_notices('success', __('Action was correctly executed', 'members-control'));
             }
             else {
-                $this->add_notices('warning', __('Action execution failed', $this->context));
+                $this->add_notices('warning', __('Action execution failed', 'members-control'));
             }
         });
     }
@@ -90,11 +90,11 @@ class Mod_Settings extends Module
                 <row class="wps-custom-action wps-row">
                     <?php
 
-                    echo RequestActions::get_action_button($this->action_hook, 'reset_options', __('Reset Plugin options', 'wpms'));
+                    echo RequestActions::get_action_button($this->action_hook, 'reset_options', __('Reset Plugin options', 'members-control'));
 
-                    echo RequestActions::get_action_button($this->action_hook, 'restore_options', __('Restore Plugin options', 'wpms'));
+                    echo RequestActions::get_action_button($this->action_hook, 'restore_options', __('Restore Plugin options', 'members-control'));
 
-                    echo RequestActions::get_action_button($this->action_hook, 'export_options', __('Export Plugin options', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'export_options', __('Export Plugin options', 'members-control'), 'button-primary');
 
                     ?>
                 </row>
@@ -107,7 +107,7 @@ class Mod_Settings extends Module
                         'context' => 'block'
                     ));
 
-                    echo RequestActions::get_action_button($this->action_hook, 'import_options', __('Import Plugin options', 'wpms'), 'button-primary');
+                    echo RequestActions::get_action_button($this->action_hook, 'import_options', __('Import Plugin options', 'members-control'), 'button-primary');
 
                    ?>
                 </row>

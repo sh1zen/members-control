@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -19,13 +19,13 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 require_once __DIR__ . '/inc/wps_and_constants.php';
 
 // Leave no trail
-$option_names = array('wpms');
+$option_names = array('wpmc');
 
 foreach ($option_names as $option_name) {
     delete_option($option_name);
 }
 
-$wpdb->query("DROP TABLE IF EXISTS " . wps('wpms')->options->table_name());
+$wpdb->query("DROP TABLE IF EXISTS " . wps('wpmc')->options->table_name());
 $wpdb->query("DROP TABLE IF EXISTS " . WP_MEMBERSHIP_TABLE_LEVELS);
 $wpdb->query("DROP TABLE IF EXISTS " . WP_MEMBERSHIP_TABLE_HISTORY);
 $wpdb->query("DROP TABLE IF EXISTS " . WP_MEMBERSHIP_TABLE_SUBSCRIPTIONS);

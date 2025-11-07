@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -30,8 +30,8 @@ class PluginInit
 
     private function __construct()
     {
-        $this->plugin_basename = UtilEnv::plugin_basename(WPMS_FILE);
-        $this->plugin_base_url = UtilEnv::path_to_url(WPMS_ABSPATH);
+        $this->plugin_basename = UtilEnv::plugin_basename(WPMC_FILE);
+        $this->plugin_base_url = UtilEnv::path_to_url(WPMC_ABSPATH);
 
         if (is_admin()) {
 
@@ -40,14 +40,14 @@ class PluginInit
 
         $this->load_textdomain();
 
-        wps_maybe_upgrade('wpms', WPMS_VERSION, WPMS_ADMIN . "upgrades/");
+        wps_maybe_upgrade('wpmc', WPMC_VERSION, WPMC_ADMIN . "upgrades/");
     }
 
     private function register_actions()
     {
         // Plugin Activation/Deactivation.
-        register_activation_hook(WPMS_FILE, array($this, 'plugin_activation'));
-        register_deactivation_hook(WPMS_FILE, array($this, 'plugin_deactivation'));
+        register_activation_hook(WPMC_FILE, array($this, 'plugin_activation'));
+        register_deactivation_hook(WPMC_FILE, array($this, 'plugin_deactivation'));
 
         add_filter("plugin_action_links_$this->plugin_basename", array($this, 'extra_plugin_link'), 10, 2);
         add_filter('plugin_row_meta', array($this, 'donate_link'), 10, 4);
@@ -58,15 +58,15 @@ class PluginInit
      */
     private function load_textdomain(): void
     {
-        $locale = apply_filters('wpms_plugin_locale', get_locale(), 'wpms');
+        $locale = apply_filters('wpmc_plugin_locale', get_locale(), 'members-control');
 
-        $mo_file = "wpms-$locale.mo";
+        $mo_file = "wpmc-$locale.mo";
 
-        if (load_textdomain('wpms', WP_LANG_DIR . '/plugins/wp-membership/' . $mo_file)) {
+        if (load_textdomain('members-control', WP_LANG_DIR . '/plugins/members-control/' . $mo_file)) {
             return;
         }
 
-        load_textdomain('wpms', UtilEnv::normalize_path(WPMS_ABSPATH . 'languages/', true) . $mo_file);
+        load_textdomain('members-control', UtilEnv::normalize_path(WPMC_ABSPATH . 'languages/', true) . $mo_file);
     }
 
     public static function getInstance(): PluginInit
@@ -91,18 +91,18 @@ class PluginInit
             /**
              * Instancing all modules that need to interact in the Ajax process
              */
-            wps('wpms')->moduleHandler->setup_modules('ajax');
+            wps('wpmc')->moduleHandler->setup_modules('ajax');
         }
         elseif (wp_doing_cron()) {
 
             /**
              * Instancing all modules that need to interact in the cron process
              */
-            wps('wpms')->moduleHandler->setup_modules('cron');
+            wps('wpmc')->moduleHandler->setup_modules('cron');
         }
         elseif (is_admin()) {
 
-            require_once WPMS_ADMIN . 'PagesHandler.class.php';
+            require_once WPMC_ADMIN . 'PagesHandler.class.php';
 
             /**
              * Load the admin pages handler and store it here
@@ -112,20 +112,20 @@ class PluginInit
             /**
              * Instancing all modules that need to interact in admin area
              */
-            wps('wpms')->moduleHandler->setup_modules('admin');
+            wps('wpmc')->moduleHandler->setup_modules('admin');
         }
         else {
 
             /**
              * Instancing all modules that need to interact only on the web-view
              */
-            wps('wpms')->moduleHandler->setup_modules('web-view');
+            wps('wpmc')->moduleHandler->setup_modules('web-view');
         }
 
         /**
          * Instancing all modules that need to be always loaded
          */
-        wps('wpms')->moduleHandler->setup_modules('autoload');
+        wps('wpmc')->moduleHandler->setup_modules('autoload');
 
         return self::$_instance;
     }
@@ -154,12 +154,12 @@ class PluginInit
 
     private function activate()
     {
-        wps('wpms')->settings->activate();
+        wps('wpmc')->settings->activate();
 
         /**
          * Hook for the plugin activation
          */
-        do_action('wpms-activate');
+        do_action('wpmc-activate');
     }
 
     /**
@@ -189,7 +189,7 @@ class PluginInit
         /**
          * Hook for the plugin deactivation
          */
-        do_action('wpms-deactivate');
+        do_action('wpmc-deactivate');
     }
 
     /**
@@ -204,7 +204,7 @@ class PluginInit
     public function donate_link($plugin_meta, $plugin_file, $plugin_data, $status): array
     {
         if ($plugin_file == $this->plugin_basename) {
-            $plugin_meta[] = '&hearts; <a target="_blank" href="https://www.paypal.com/donate/?business=dev.sh1zen%40outlook.it&item_name=Thank+you+in+advanced+for+the+kind+donations.+You+will+sustain+me+developing+WP-Membership.&currency_code=EUR">' . __('Buy me a beer', 'wpms') . ' :o)</a>';
+            $plugin_meta[] = '&hearts; <a target="_blank" href="https://www.paypal.com/donate/?business=dev.sh1zen%40outlook.it&item_name=Thank+you+in+advanced+for+the+kind+donations.+You+will+sustain+me+developing+MembersControl.&currency_code=EUR">' . __('Buy me a beer', 'members-control') . ' :o)</a>';
         }
 
         return $plugin_meta;
@@ -222,8 +222,8 @@ class PluginInit
     {
         $links[] = sprintf(
             '<a href="%s">%s</a>',
-            admin_url('admin.php?page=wpms-modules-settings'),
-            __('Settings', 'wpms')
+            admin_url('admin.php?page=wpmc-modules-settings'),
+            __('Settings', 'members-control')
         );
 
         return $links;

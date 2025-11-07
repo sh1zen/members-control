@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    sh1zen
- * @copyright Copyright (C) 2024.
+ * @copyright Copyright (C) 2025.
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL
  */
 
@@ -25,7 +25,7 @@ class MembersList extends \WP_List_Table
     public function __construct($args = array())
     {
         $this->modes = array(
-            'list' => __('List view', 'wpms')
+            'list' => __('List view', 'members-control')
         );
 
         $this->action_hook = $args['action_hook'] ?? '';
@@ -34,8 +34,8 @@ class MembersList extends \WP_List_Table
 
         parent::__construct(
             array(
-                'singular' => __('member', 'wpms'),
-                'plural'   => __('members', 'wpms'),
+                'singular' => __('member', 'members-control'),
+                'plural'   => __('members', 'members-control'),
                 'ajax'     => false,
                 'screen'   => get_current_screen() ?? null,
             )
@@ -44,9 +44,9 @@ class MembersList extends \WP_List_Table
 
     public function column_subscription($member)
     {
-        $member = wpms_get_member($member);
+        $member = wpmc_get_member($member);
 
-        $level_title = $member->get_sub()->get_level()->title ?: __('None', 'wpms');
+        $level_title = $member->get_sub()->get_level()->title ?: __('None', 'members-control');
 
         $output = "<strong>$level_title</strong>";
 
@@ -55,19 +55,19 @@ class MembersList extends \WP_List_Table
             $row_actions = array();
 
             if ($member->has_subscription()) {
-                $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_page_hook, 'edit') . "&user_id=" . $member->get_user()->ID . "'>" . __('Edit', 'wpms') . "</a></span>";
+                $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_page_hook, 'edit') . "&user_id=" . $member->get_user()->ID . "'>" . __('Edit', 'members-control') . "</a></span>";
 
                 if ($member->is_suspended()) {
-                    $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'resume_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Resume', 'wpms') . "</a></span>";
+                    $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'resume_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Resume', 'members-control') . "</a></span>";
                 }
                 else {
-                    $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'suspend_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Suspend', 'wpms') . "</a></span>";
+                    $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_hook, 'suspend_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Suspend', 'members-control') . "</a></span>";
                 }
 
-                $row_actions[] = "<span class='inline delete'><a href='" . RequestActions::get_url($this->action_hook, 'drop_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Drop', 'wpms') . "</a></span>";
+                $row_actions[] = "<span class='inline delete'><a href='" . RequestActions::get_url($this->action_hook, 'drop_sub') . "&user_id=" . $member->get_user()->ID . "'>" . __('Drop', 'members-control') . "</a></span>";
             }
             else {
-                $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_page_hook, 'add') . "&user_id=" . $member->get_user()->ID . "'>" . __('Add', 'wpms') . "</a></span>";
+                $row_actions[] = "<span class='inline'><a href='" . RequestActions::get_url($this->action_page_hook, 'add') . "&user_id=" . $member->get_user()->ID . "'>" . __('Add', 'members-control') . "</a></span>";
             }
 
             $output .= '<br><div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
@@ -78,16 +78,16 @@ class MembersList extends \WP_List_Table
 
     public function column_username($member)
     {
-        $member = wpms_get_member($member);
+        $member = wpmc_get_member($member);
 
         $edit_link = admin_url('user-edit.php?user_id=' . $member->get_user()->ID);
 
         $output = '<strong><a href="' . esc_url($edit_link) . '" class="row-title">' . ucwords(strtolower(esc_html($member->get_user()->display_name))) . '</a></strong>';
 
-        $row_actions[] = "<span class='edit'><a target='_blank' href='$edit_link'>" . __('Edit', 'wpms') . "</a></span>";
+        $row_actions[] = "<span class='edit'><a target='_blank' href='$edit_link'>" . __('Edit', 'members-control') . "</a></span>";
 
         if (in_array('author', $member->get_user()->roles)) {
-            $row_actions[] = "<span class='inline'><a target='_blank' href='" . get_author_posts_url($member->get_user()->ID) . "'>" . __('View', 'wpms') . "</a></span>";
+            $row_actions[] = "<span class='inline'><a target='_blank' href='" . get_author_posts_url($member->get_user()->ID) . "'>" . __('View', 'members-control') . "</a></span>";
         }
 
         $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
@@ -98,7 +98,7 @@ class MembersList extends \WP_List_Table
     public function display_tablenav($which)
     {
         if ('top' == $which) {
-            $this->search_box(__('Search', 'wpms'), 'wpms-al-search');
+            $this->search_box(__('Search', 'members-control'), 'wpmc-al-search');
         }
         ?>
         <row class="tablenav <?php echo esc_attr($which); ?>">
@@ -140,9 +140,9 @@ class MembersList extends \WP_List_Table
             return;
         }
 
-        echo '<label for="bulk-action-selector-' . esc_attr($which) . '" class="screen-reader-text">' . __('Select bulk action') . '</label>';
+        echo '<label for="bulk-action-selector-' . esc_attr($which) . '" class="screen-reader-text">' . __('Select bulk action', 'members-control') . '</label>';
         echo "<select name='bulk-action' id='bulk-action-selector-" . esc_attr($which) . "'>";
-        echo '<option value="-1">' . __('Bulk actions') . "</option>";
+        echo '<option value="-1">' . __('Bulk actions', 'members-control') . "</option>";
 
         foreach ($this->_actions as $key => $value) {
             if (is_array($value)) {
@@ -164,7 +164,7 @@ class MembersList extends \WP_List_Table
 
         echo "</select>";
 
-        submit_button(__('Apply'), 'action', $this->action_hook, false);
+        submit_button(__('Apply', 'members-control'), 'action', $this->action_hook, false);
     }
 
     public function extra_tablenav($which)
@@ -182,34 +182,34 @@ class MembersList extends \WP_List_Table
     {
         echo '<div class="alignleft actions">';
         echo '<select name="filter_level">';
-        printf('<option value="">%s</option>', __('Filter by subscription', 'wpms'));
-        printf('<option value="0"%s>%s</option>', selected($_REQUEST['filter_level'] ?? '', '0', false), __('View Inactive Users', 'wpms'));
-        foreach (wpms_get_levels() as $level) {
+        printf('<option value="">%s</option>', __('Filter by subscription', 'members-control'));
+        printf('<option value="0"%s>%s</option>', selected($_REQUEST['filter_level'] ?? '', '0', false), __('View Inactive Users', 'members-control'));
+        foreach (wpmc_get_levels() as $level) {
             printf('<option value="%s"%s>%s</option>', $level->id, selected($_REQUEST['filter_level'] ?? '', $level->id, false), ucwords($level->title));
         }
         echo '</select>';
-        submit_button(__('Filter', 'wpms'), 'button', '', false);
+        submit_button(__('Filter', 'members-control'), 'button', '', false);
         echo '</div>';
 
         echo '<div class="alignleft actions">';
         echo '<select name="filter_role">';
-        printf('<option value="">%s</option>', __('Filter by User Role', 'wpms'));
+        printf('<option value="">%s</option>', __('Filter by User Role', 'members-control'));
         foreach (wp_roles()->roles as $role_slug => $role_details) {
             printf('<option value="%s"%s>%s</option>', $role_slug, selected($_REQUEST['filter_role'] ?? '', $role_slug, false), ucwords($role_details['name']));
         }
         echo '</select>';
-        submit_button(__('Filter', 'wpms'), 'button', '', false);
+        submit_button(__('Filter', 'members-control'), 'button', '', false);
         echo '</div>';
 
         echo '<div class="alignleft actions">';
         echo '<select name="filter_expiring">';
-        printf('<option value="">%s</option>', __('Filter Expiring', 'wpms'));
-        printf('<option value="7"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '7', false), __('7 Days', 'wpms'));
-        printf('<option value="30"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '30', false), __('30 Days', 'wpms'));
-        printf('<option value="60"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '60', false), __('60 Days', 'wpms'));
-        printf('<option value="90"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '90', false), __('90 Days', 'wpms'));
+        printf('<option value="">%s</option>', __('Filter Expiring', 'members-control'));
+        printf('<option value="7"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '7', false), __('7 Days', 'members-control'));
+        printf('<option value="30"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '30', false), __('30 Days', 'members-control'));
+        printf('<option value="60"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '60', false), __('60 Days', 'members-control'));
+        printf('<option value="90"%s>%s</option>', selected($_REQUEST['filter_expiring'] ?? '0', '90', false), __('90 Days', 'members-control'));
         echo '</select>';
-        submit_button(__('Filter', 'wpms'), 'button', '', false);
+        submit_button(__('Filter', 'members-control'), 'button', '', false);
         echo '</div>';
     }
 
@@ -230,21 +230,21 @@ class MembersList extends \WP_List_Table
         ?>
         <div class="alignleft actions recordactions">
             <select name="export-format">
-                <option value=""><?php echo esc_attr__('Export File Format', 'wpms'); ?></option>
+                <option value=""><?php echo esc_attr__('Export File Format', 'members-control'); ?></option>
                 <?php foreach ($actions as $action_key => $action_title) : ?>
                     <option value="<?php echo esc_attr($action_key); ?>"><?php echo esc_html($action_title); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <button class="button button-primary" type="submit" name="<?php echo $this->action_hook; ?>" value="export">
-            <?php _e('Export Data', 'wpms') ?>
+            <?php _e('Export Data', 'members-control') ?>
         </button>
         <?php
     }
 
     public function column_default($item, $column_name)
     {
-        $item = wpms_get_member($item);
+        $item = wpmc_get_member($item);
 
         switch ($column_name) {
 
@@ -258,13 +258,13 @@ class MembersList extends \WP_List_Table
 
             case 'expire':
                 if ($item->get_sub()->is_suspended()) {
-                    $return = "<span>" . __('Suspended', 'wpms') . "</span>";
+                    $return = "<span>" . __('Suspended', 'members-control') . "</span>";
                 }
                 else {
                     if ($expire = $item->get_sub()->end_time()) {
                         $expire = date("Y-m-d H:i", $expire);
                     }
-                    $return = "<span>" . ($expire ?: __('No', 'wpms')) . "</span>";
+                    $return = "<span>" . ($expire ?: __('No', 'members-control')) . "</span>";
                 }
                 break;
 
@@ -277,7 +277,7 @@ class MembersList extends \WP_List_Table
                 break;
 
             default:
-                $return = '<span>' . __('None', 'wpms') . '</span>';
+                $return = '<span>' . __('None', 'members-control') . '</span>';
         }
 
         return $return;
@@ -394,23 +394,23 @@ class MembersList extends \WP_List_Table
             case 'news':
                 $columns = [
                     'cb'           => '<input type="checkbox" />',
-                    'username'     => __('Username', 'wpms'),
-                    'user_name'    => __('Name', 'wpms'),
-                    'email'        => __('E-mail', 'wpms'),
-                    'subscription' => __('Subscription', 'wpms'),
-                    'expire'       => __('Expire', 'wpms'),
+                    'username'     => __('Username', 'members-control'),
+                    'user_name'    => __('Name', 'members-control'),
+                    'email'        => __('E-mail', 'members-control'),
+                    'subscription' => __('Subscription', 'members-control'),
+                    'expire'       => __('Expire', 'members-control'),
                 ];
                 break;
 
             default:
                 $columns = [
-                    'username'     => __('Username', 'wpms'),
-                    'user_name'    => __('Name', 'wpms'),
-                    'email'        => __('E-mail', 'wpms'),
-                    'subscription' => __('Subscription', 'wpms'),
-                    'expire'       => __('Expire', 'wpms'),
-                    'renew_count'  => __('Renew / Payments', 'wpms'),
-                    'posts'        => __('Posts', 'wpms'),
+                    'username'     => __('Username', 'members-control'),
+                    'user_name'    => __('Name', 'members-control'),
+                    'email'        => __('E-mail', 'members-control'),
+                    'subscription' => __('Subscription', 'members-control'),
+                    'expire'       => __('Expire', 'members-control'),
+                    'renew_count'  => __('Renew / Payments', 'members-control'),
+                    'posts'        => __('Posts', 'members-control'),
                 ];
         }
 
@@ -438,6 +438,6 @@ class MembersList extends \WP_List_Table
 
     public function no_items()
     {
-        _e('No Users found.', 'wpms');
+        _e('No Users found.', 'members-control');
     }
 }
